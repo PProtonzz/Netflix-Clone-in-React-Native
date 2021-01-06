@@ -1,8 +1,16 @@
-# Netflix Clone in React-Native With Firebase [2021] By PRANAV FULKARI
+# Netflix Clone in React-Native With Firebase [2021]
+# By PRANAV FULKARI and Prajwal Ghate
 
 Youtube Tutorial Link : https://www.youtube.com/playlist?list=PLJsBDvrZdNTjoQ2_Y-Nr96vDp-8H5LiZh
 
 This is 15 Days challenge for me to be consistent about REACT NATIVE, We're going to cover different react native components, UI and logics. Also will develop a small app in react native. Also I'm developing a NETFLIX CLONE where we'll see all the codes and logics.
+
+# How to run the app
+Follow the command:
+
+npm i
+
+npx react-native run-android
 
 # Docs
 
