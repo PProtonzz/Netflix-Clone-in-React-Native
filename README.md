@@ -16,7 +16,7 @@ Firebase Docs: https://firebase.google.com/docs/auth
 
 # Live View
 
-[![Youtube Tutorial of Netflix Clone](https://raw.githubusercontent.com/PProtonzz/Netflix-Clone-in-React-Native/main/Banner.jpg)](https://www.youtube.com/playlist?list=PLJsBDvrZdNTjoQ2_Y-Nr96vDp-8H5LiZh)
+[![Youtube Tutorial of Netflix Clone](https://raw.githubusercontent.com/PProtonzz/Netflix-Clone-in-React-Native/master/Banner.jpg)](https://www.youtube.com/playlist?list=PLJsBDvrZdNTjoQ2_Y-Nr96vDp-8H5LiZh)
 
 # Follow for more
 
