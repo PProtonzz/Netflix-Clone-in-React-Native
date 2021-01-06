@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import auth from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
-import { AuthContext } from "./context";
+import { AuthContext } from "../context";
 
 
 export default function Home({ navigation }) {
@@ -24,7 +24,7 @@ export default function Home({ navigation }) {
 
   function getUserData(uid){
     database()
-      .ref(`/Users/${uid}`)
+      .ref(`/Users/${uid}/Info`)
       .on('value',(snapshot)=>{
         setUserDetail({
           email: snapshot.val().email,
@@ -43,7 +43,7 @@ export default function Home({ navigation }) {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "#191414",
+        backgroundColor:  '#101010',
         paddingTop: StatusBar.currentHeight,
         alignContent: "center",
         justifyContent: "center",
@@ -54,20 +54,7 @@ export default function Home({ navigation }) {
         <Text style={{ color: "white" }}>Hello {userDetail.fullName}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => {
-          auth()
-            .signOut()
-            .then(() => {
-              console.log("User signed out!");
-              signOut();
-              //navigation.navigate('signin')
-            });
-        }}
-        style={{ padding: 40 }}
-      >
-        <Text style={{ color: "white" }}>LOGOUT</Text>
-      </TouchableOpacity>
+     
     </SafeAreaView>
   );
 }

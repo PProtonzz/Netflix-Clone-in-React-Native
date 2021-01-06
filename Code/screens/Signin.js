@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   ImageBackground,
 } from "react-native";
-import { AuthContext } from './context';
+import { AuthContext } from '../context';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 
@@ -81,7 +81,15 @@ const loginUser = () => {
           
           <View style={{paddingTop:20}}>
             <TouchableOpacity
-              style={styles.but}
+              style={{
+                alignItems: "center",
+                backgroundColor: "#E50914",
+                borderRadius: 5,
+                padding: 10,
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
               onPress={() => {
                 loginUser();
               }}
