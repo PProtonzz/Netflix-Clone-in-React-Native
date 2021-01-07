@@ -11,6 +11,8 @@ import {
   Image,
   Modal,
   ImageBackground,
+  Dimensions,
+  ToastAndroid,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
@@ -18,21 +20,22 @@ import {AuthContext} from '../context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Video} from 'expo-av';
 import LoadingView from './services/Loading.js';
-import colors from "./services/colors"
+import colors from './services/colors';
+
+import LinearGradient from 'react-native-linear-gradient';
+
+const windowWidth = Dimensions.get('window').width;
 
 export default function Home({navigation}) {
   const {signOut} = React.useContext(AuthContext);
-  
+
   const [loading, setLoading] = useState(true);
   const [isVisible, setVisible] = useState(null);
-  const [vidList, setVidList] = useState([
-    {
-      name: 'coolie',
-    },
-    {
-      name: 'tenet',
-    },
-  ]);
+  const [BollywoodList, setBollywoodList] = useState([]);
+  const [HollywoodList, setHollywoodList] = useState([]);
+  const [SeriesList, setSeriesList] = useState([]);
+  const [KidsList, setKidsList] = useState([]);
+  const [TrendingList, setTrendingList] = useState([]);
   const [userDetail, setUserDetail] = useState({
     email: '',
     fullName: '',
@@ -53,30 +56,116 @@ export default function Home({navigation}) {
       });
   }
 
-  function getVidList() {
+  function getTrendingList() {
+    database()
+      .ref('/Categories/')
+      .on('value', (snapshot) => {
+        var main = [];
+        snapshot.forEach((child2) => {
+          child2.forEach((child) => {
+            if (main.every((item) => item.link !== child.val().link)) {
+              main.push({
+                name: child.val().name,
+                link: child.val().link,
+                description: child.val().description,
+                genre: child.val().genre,
+                viewCount: child.val().viewCount,
+                cast: child.val().cast,
+                thumbnail: child.val().thumbnail,
+              });
+            }
+          });
+        });
+        setTrendingList(sortArrayAsc(main));
+      });
+  }
+
+  function sortArrayAsc(array) {
+    return array.sort(function (a, b) {
+      console.info(b.viewCount);
+      return b.viewCount < a.viewCount ? -1 : b.viewCount > a.viewCount ? 1 : 0;
+    });
+  }
+
+  function getList() {
     database()
       .ref('/Categories/Bollywood')
       .on('value', (snapshot) => {
         var main = [];
         snapshot.forEach((child) => {
-          console.log(child.val());
           main.push({
             name: child.val().name,
             link: child.val().link,
-            Description: child.val().Description,
-            Genre: child.val().Genre,
-            ViewCount: child.val().ViewCount,
-            Cast: child.val().Cast,
+            description: child.val().description,
+            genre: child.val().genre,
+            viewCount: child.val().viewCount,
+            cast: child.val().cast,
+            thumbnail: child.val().thumbnail,
           });
         });
-        setVidList(main);
+        setBollywoodList(main);
+      });
+
+    database()
+      .ref('/Categories/Hollywood')
+      .on('value', (snapshot) => {
+        var main = [];
+        snapshot.forEach((child) => {
+          main.push({
+            name: child.val().name,
+            link: child.val().link,
+            description: child.val().description,
+            genre: child.val().genre,
+            viewCount: child.val().viewCount,
+            cast: child.val().cast,
+            thumbnail: child.val().thumbnail,
+          });
+        });
+        setHollywoodList(main);
+      });
+
+    database()
+      .ref('/Categories/Series')
+      .on('value', (snapshot) => {
+        var main = [];
+        snapshot.forEach((child) => {
+          main.push({
+            name: child.val().name,
+            link: child.val().link,
+            description: child.val().description,
+            genre: child.val().genre,
+            viewCount: child.val().viewCount,
+            cast: child.val().cast,
+            thumbnail: child.val().thumbnail,
+          });
+        });
+        setSeriesList(main);
+      });
+
+    database()
+      .ref('/Categories/Kids')
+      .on('value', (snapshot) => {
+        var main = [];
+        snapshot.forEach((child) => {
+          main.push({
+            name: child.val().name,
+            link: child.val().link,
+            description: child.val().description,
+            genre: child.val().genre,
+            viewCount: child.val().viewCount,
+            cast: child.val().cast,
+            thumbnail: child.val().thumbnail,
+          });
+        });
+        setKidsList(main);
       });
   }
 
   useEffect(() => {
     const user = auth().currentUser;
     getUserData(user.uid);
-    getVidList();
+    getList();
+    getTrendingList();
   }, []);
 
   return (
@@ -84,22 +173,87 @@ export default function Home({navigation}) {
       style={{
         flex: 1,
         backgroundColor: colors.primary,
-        paddingTop: StatusBar.currentHeight,
       }}>
-      <StatusBar
-        translucent
-        backgroundColor="#191414"
-        barStyle="light-content"
-      />
       <ScrollView>
+        <ImageBackground
+          source={{
+            uri:
+              'https://www.filmibeat.com/ph-big/2012/05/gangs-of-wasseypur_133783674811.jpg',
+          }}
+          style={{
+            height: windowWidth - 60,
+            width: windowWidth,
+            justifyContent: 'flex-end',
+          }}>
+          <LinearGradient colors={['transparent', 'rgba(0, 0, 0, 0.73)', 'black']} style={{}}>
+          <View
+              style={{
+                height:50,
+                marginBottom:20,
+              }}></View>
+            <View
+              style={{
+                marginLeft:40,
+                marginRight:40,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 12,
+                alignItems: 'center',
+                marginHorizontal: 9,
+              }}>
+              <View style={{}}>
+                <Icon
+                  name="add"
+                  style={{paddingHorizontal: 8}}
+                  size={16}
+                  color={colors.text}
+                />
+                <Text style={{color: colors.text}}>Done</Text>
+              </View>
+              <View
+                style={{
+                  backgroundColor: colors.text,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderRadius: 4,
+                  paddingHorizontal: 3,
+                }}>
+                <Icon
+                  name="play"
+                  style={{paddingHorizontal: 8}}
+                  size={16}
+                  color={'#000000'}
+                />
+                <Text style={{color: '#000000', textAlign: 'center'}}>
+                  Done
+                </Text>
+              </View>
+              <View style={{alignItems: 'center'}}>
+                <Icon
+                  name="information-circle-outline"
+                  style={{paddingHorizontal: 8}}
+                  size={18}
+                  color={colors.text}
+                />
+                <Text style={{color: colors.text}}>Info</Text>
+              </View>
+            </View>
+            <View
+              style={{
+                height:5,
+                marginBottom:20,
+              }}></View>
+          </LinearGradient>
+        </ImageBackground>
+
         <View
           style={{
-            height: 70,
+            height: 10,
             alignItems: 'flex-end',
             justifyContent: 'center',
           }}></View>
         <View style={{}}>
-          <View>
+          {/* <View>
             <Text
               style={{
                 color: 'white',
@@ -112,10 +266,10 @@ export default function Home({navigation}) {
           </View>
           <FlatList
             horizontal={true}
-            data={vidList}
+            data={BollywoodList}
             showsHorizontalScrollIndicator={false}
             style={{marginTop: 15, flex: 1}}
-            renderItem={({item,index}) => (
+            renderItem={({item, index}) => (
               <View
                 style={{
                   marginHorizontal: 15,
@@ -130,12 +284,15 @@ export default function Home({navigation}) {
                     justifyContent: 'center',
                   }}
                   source={require('./assets/img.jpg')}>
-                    <TouchableOpacity onPress={()=>setVisible(index)}>
-                      
-                  <View style={styles.playButton}>
-                    <Icon name="play" style={{marginLeft:3}} color={colors.text} size={30} />
-                  </View>
-                  
+                  <TouchableOpacity onPress={() => setVisible(index)}>
+                    <View style={styles.playButton}>
+                      <Icon
+                        name="play"
+                        style={{marginLeft: 3}}
+                        color={colors.text}
+                        size={30}
+                      />
+                    </View>
                   </TouchableOpacity>
                 </ImageBackground>
                 <View
@@ -171,42 +328,47 @@ export default function Home({navigation}) {
             transparent={false}
             visible={isVisible !== null}
             onRequestClose={() => {
-              setVisible(null)
+              setVisible(null);
             }}>
             <View
               style={{
                 flex: 1,
                 backgroundColor: '#000000',
               }}>
-                <View>
+              <View>
                 {loading && <LoadingView />}
-              <Video
-                ref={(ref) => {
-                  console.log(ref);
-                }}
-                source={isVisible !== null ? {uri: vidList[isVisible].link} : null}
-                shouldPlay={false}
-                onLoadStart={() => {
-                  setLoading(true);
-                }}
-                onLoad={() => {
-                  setLoading(false);
-                }}
-                useNativeControls
-                resizeMode="contain"
-                style={{
-                  aspectRatio: 0.8,
-                  // position: 'absolute',
-                  // top: 0,
-                  // right: 0,
-                  // bottom: 0,
-                  // left: 0,
-                  borderRadius: 7,
-                }}
-              />
+                <Video
+                  ref={(ref) => {
+                    console.log(ref);
+                  }}
+                  source={
+                    isVisible !== null
+                      ? {uri: BollywoodList[isVisible].link}
+                      : null
+                  }
+                  shouldPlay={false}
+                  onLoadStart={() => {
+                    setLoading(true);
+                  }}
+                  onLoad={() => {
+                    setLoading(false);
+                  }}
+                  useNativeControls
+                  resizeMode="contain"
+                  style={{
+                    aspectRatio: 0.8,
+                    // position: 'absolute',
+                    // top: 0,
+                    // right: 0,
+                    // bottom: 0,
+                    // left: 0,
+                    borderRadius: 7,
+                  }}
+                />
               </View>
             </View>
-          </Modal>
+          </Modal> */}
+
           <View>
             <Text
               style={{
@@ -214,22 +376,23 @@ export default function Home({navigation}) {
                 fontWeight: 'bold',
                 fontSize: 17,
                 paddingHorizontal: 15,
-                marginTop: 15,
               }}>
-              Popular On Netflix
+              Trending Now
             </Text>
           </View>
 
           <FlatList
             horizontal={true}
-            data={vidList}
+            data={TrendingList}
             showsHorizontalScrollIndicator={false}
             style={{marginTop: 15, flex: 1}}
             renderItem={({item}) => (
-              <View style={{marginHorizontal: 15}}>
+              <View style={{marginHorizontal: 10}}>
                 <Image
-                  style={{height: 150, width: 120}}
-                  source={require('./assets/img.jpg')}
+                  style={{borderRadius: 5, height: 150, width: 120}}
+                  source={{
+                    uri: item.thumbnail,
+                  }}
                 />
               </View>
             )}
@@ -244,6 +407,7 @@ export default function Home({navigation}) {
             }}
             keyExtractor={(item, index) => index.toString()}
           />
+
           <View>
             <Text
               style={{
@@ -253,20 +417,142 @@ export default function Home({navigation}) {
                 paddingHorizontal: 15,
                 marginTop: 15,
               }}>
-              Trending Now
+              Netflix Originals
             </Text>
           </View>
 
           <FlatList
             horizontal={true}
-            data={vidList}
+            data={SeriesList}
             showsHorizontalScrollIndicator={false}
             style={{marginTop: 15, flex: 1}}
             renderItem={({item}) => (
-              <View style={{marginHorizontal: 15}}>
+              <View style={{marginHorizontal: 10}}>
                 <Image
-                  style={{height: 150, width: 120}}
-                  source={require('./assets/img.jpg')}
+                  style={{borderRadius: 5, height: 150, width: 120}}
+                  source={{
+                    uri: item.thumbnail,
+                  }}
+                />
+              </View>
+            )}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: '100%',
+                  }}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+
+          <View>
+            <Text
+              style={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 17,
+                paddingHorizontal: 15,
+                marginTop: 15,
+              }}>
+              Bollywood Movies
+            </Text>
+          </View>
+
+          <FlatList
+            horizontal={true}
+            data={BollywoodList}
+            showsHorizontalScrollIndicator={false}
+            style={{marginTop: 15, flex: 1}}
+            renderItem={({item}) => (
+              <View style={{marginHorizontal: 10}}>
+                <Image
+                  style={{borderRadius: 5, height: 150, width: 120}}
+                  source={{
+                    uri: item.thumbnail,
+                  }}
+                />
+              </View>
+            )}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: '100%',
+                  }}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+
+          <View>
+            <Text
+              style={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 17,
+                paddingHorizontal: 15,
+                marginTop: 15,
+              }}>
+              Hollywood Movies
+            </Text>
+          </View>
+
+          <FlatList
+            horizontal={true}
+            data={HollywoodList}
+            showsHorizontalScrollIndicator={false}
+            style={{marginTop: 15, flex: 1}}
+            renderItem={({item}) => (
+              <View style={{marginHorizontal: 10}}>
+                <Image
+                  style={{borderRadius: 5, height: 150, width: 120}}
+                  source={{
+                    uri: item.thumbnail,
+                  }}
+                />
+              </View>
+            )}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: '100%',
+                  }}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+
+          <View>
+            <Text
+              style={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 17,
+                paddingHorizontal: 15,
+                marginTop: 15,
+              }}>
+              Kids, Cartoons {'&'} Childrens
+            </Text>
+          </View>
+
+          <FlatList
+            horizontal={true}
+            data={KidsList}
+            showsHorizontalScrollIndicator={false}
+            style={{marginTop: 15, flex: 1}}
+            renderItem={({item}) => (
+              <View style={{marginHorizontal: 10}}>
+                <Image
+                  style={{borderRadius: 5, height: 150, width: 120}}
+                  source={{
+                    uri: item.thumbnail,
+                  }}
                 />
               </View>
             )}

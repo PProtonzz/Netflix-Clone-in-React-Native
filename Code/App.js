@@ -47,20 +47,21 @@ function AuthDoneScreen() {
     <AuthDone.Navigator
       initialRouteName="HomeScreen"
       tabBarPosition="bottom"
+      swipeEnabled={false}
       tabBarOptions={{
         activeTintColor: colors.text,
-        labelStyle: {fontSize: 10,textAlign:"center"},
-        iconStyle:{alignItems:"center"},
-        indicatorStyle:{opacity:0},
+        labelStyle: {fontSize: 10, textAlign: 'center'},
+        iconStyle: {alignItems: 'center'},
+        indicatorStyle: {opacity: 0},
         showIcon: true,
         style: {
-          backgroundColor: '#101010',
+          backgroundColor: '#000000',
           elevation: 0, // for Android
           shadowOffset: {
             width: 0,
             height: 0, // for iOS
           },
-          borderEndWidth:0
+          borderEndWidth: 0,
         },
       }}>
       <AuthDone.Screen

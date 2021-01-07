@@ -12,7 +12,6 @@ import {
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {AuthContext} from '../context';
-
 import colors from './services/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -95,7 +94,7 @@ export default function ManagePro({navigation}) {
         <View>
           <View
             style={{padding: 10, marginHorizontal: 10, alignItems: 'center'}}>
-            <Text
+            <Text onPress={() => {navigation.navigate("Profile")}}
               style={{
                 color: '#ffffff',
                 textAlign: 'center',

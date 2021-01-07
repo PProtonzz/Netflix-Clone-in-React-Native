@@ -48,7 +48,7 @@ export default function Search({navigation}) {
         alignItems: 'center',
       }}>
       <TouchableOpacity>
-        <Text style={{color: 'white'}}>Hello {userDetail.fullName}</Text>
+        <Text style={{color: 'white'}}>Coming Soon Bro! {userDetail.fullName}</Text>
       </TouchableOpacity>
 
     </SafeAreaView>

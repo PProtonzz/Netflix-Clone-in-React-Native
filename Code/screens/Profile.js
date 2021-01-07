@@ -9,6 +9,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
@@ -26,19 +27,18 @@ export default function Profile({navigation}) {
 
   const [ProfilesList, setProfilesList] = useState([
     {
-      name:"User1"
+      name: 'User1',
     },
     {
-      name:"User2"
+      name: 'User2',
     },
     {
-      name:"User3"
+      name: 'User3',
     },
-   {
-      name:"User4"
-    }
-  
-]);
+    {
+      name: 'User4',
+    },
+  ]);
 
   const [userDetail, setUserDetail] = useState({
     email: '',
@@ -78,7 +78,7 @@ export default function Profile({navigation}) {
   useEffect(() => {
     const user = auth().currentUser;
     getUserData(user.uid);
-    getProfiles(user.uid)
+    getProfiles(user.uid);
   }, []);
 
   return (
@@ -168,58 +168,64 @@ export default function Profile({navigation}) {
             </Text>
           </View>
         </TouchableOpacity>
-        <View style={styles.set}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon
-              name="checkmark"
-              style={{paddingHorizontal: 11}}
-              size={22}
-              color={colors.text}
-            />
-            <Text style={{color: colors.text}}>My List</Text>
-          </View>
-          <Icon
-            name="chevron-forward"
-            style={{paddingHorizontal: 11}}
-            size={22}
-            color={colors.text}
-          />
-        </View>
-        <View style={styles.set}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon
-              name="settings-outline"
-              style={{paddingHorizontal: 11}}
-              size={22}
-              color={colors.text}
-            />
-            <Text style={{color: colors.text}}>App Settings</Text>
-          </View>
-          <Icon
-            name="chevron-forward"
-            style={{paddingHorizontal: 11}}
-            size={22}
-            color={colors.text}
-          />
-        </View>
-        <View style={styles.set}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon
-              name="help-circle-outline"
-              style={{paddingHorizontal: 11}}
-              size={22}
-              color={colors.text}
-            />
-            <Text style={{color: colors.text}}>Help</Text>
-          </View>
-          <Icon
-            name="chevron-forward"
-            style={{paddingHorizontal: 11}}
-            size={22}
-            color={colors.text}
-          />
-        </View>
 
+        <TouchableOpacity
+          onPress={() => {
+            ToastAndroid.show('इतना तो कर हमरखोर!', ToastAndroid.SHORT);
+          }}>
+          <View style={styles.set}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Icon
+                name="checkmark"
+                style={{paddingHorizontal: 11}}
+                size={22}
+                color={colors.text}
+              />
+              <Text style={{color: colors.text}}>My List</Text>
+            </View>
+            <Icon
+              name="chevron-forward"
+              style={{paddingHorizontal: 11}}
+              size={22}
+              color={colors.text}
+            />
+          </View>
+
+          <View style={styles.set}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Icon
+                name="settings-outline"
+                style={{paddingHorizontal: 11}}
+                size={22}
+                color={colors.text}
+              />
+              <Text style={{color: colors.text}}>App Settings</Text>
+            </View>
+            <Icon
+              name="chevron-forward"
+              style={{paddingHorizontal: 11}}
+              size={22}
+              color={colors.text}
+            />
+          </View>
+          <View style={styles.set}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Icon
+                name="help-circle-outline"
+                style={{paddingHorizontal: 11}}
+                size={22}
+                color={colors.text}
+              />
+              <Text style={{color: colors.text}}>Help</Text>
+            </View>
+            <Icon
+              name="chevron-forward"
+              style={{paddingHorizontal: 11}}
+              size={22}
+              color={colors.text}
+            />
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             auth()
