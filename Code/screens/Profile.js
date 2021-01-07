@@ -15,6 +15,7 @@ import database from '@react-native-firebase/database';
 import {AuthContext} from '../context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DeviceInfo from 'react-native-device-info';
+import colors from './services/colors';
 
 const appVersion = DeviceInfo.getVersion();
 
@@ -69,92 +70,47 @@ export default function Profile({navigation}) {
             marginTop: 40,
           }}>
           <View>
-            <View
-              style={{
-                height: 50,
-                width: 50,
-                backgroundColor: 'orange',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                borderRadius: 6,
-              }}>
+            <View style={[styles.profiles, {backgroundColor: 'orange'}]}>
               <Image
                 style={{height: 35, width: 35}}
                 source={require('./assets/girl.png')}></Image>
             </View>
-            <Text style={{color: '#ffffff', textAlign: 'center', fontSize: 12}}>
+            <Text
+              style={{color: colors.text, textAlign: 'center', fontSize: 12}}>
               User1
             </Text>
           </View>
+
           <View>
-            <View
-              style={{
-                height: 50,
-                width: 50,
-                backgroundColor: 'yellow',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 6,
-              }}>
-              <Image
-                style={{height: 35, width: 35}}
-                source={require('./assets/smile.png')}></Image>
-            </View>
-            <Text style={{color: '#ffffff', textAlign: 'center', fontSize: 12}}>
-              User2
-            </Text>
-          </View>
-          <View>
-            <View
-              style={{
-                height: 50,
-                width: 50,
-                backgroundColor: 'green',
-                alignItems: 'center',
-                borderRadius: 6,
-                justifyContent: 'flex-end',
-              }}>
+            <View style={[styles.profiles, {backgroundColor: 'pink'}]}>
               <Image
                 style={{height: 35, width: 35}}
                 source={require('./assets/boy.png')}></Image>
             </View>
-            <Text style={{color: '#ffffff', textAlign: 'center', fontSize: 12}}>
-              User3
+            <Text
+              style={{color: colors.text, textAlign: 'center', fontSize: 12}}>
+              User2
             </Text>
           </View>
           <View>
-            <View
-              style={{
-                height: 50,
-                width: 50,
-                backgroundColor: 'violet',
-                alignItems: 'center',
-                borderRadius: 6,
-                justifyContent: 'flex-end',
-              }}>
+            <View style={[styles.profiles, {backgroundColor: 'green'}]}>
               <Image
                 style={{height: 35, width: 35}}
                 source={require('./assets/monkey.png')}></Image>
             </View>
-            <Text style={{color: '#ffffff', textAlign: 'center', fontSize: 12}}>
-              User4
+            <Text
+              style={{color: colors.text, textAlign: 'center', fontSize: 12}}>
+              User3
             </Text>
           </View>
           <View>
-            <View
-              style={{
-                height: 50,
-                width: 50,
-                backgroundColor: 'pink',
-                alignItems: 'center',
-                borderRadius: 6,
-                justifyContent: 'flex-end',
-              }}>
+            <View style={[styles.profiles, {backgroundColor: 'violet'}]}>
               <Image
                 style={{height: 35, width: 35}}
                 source={require('./assets/baby.png')}></Image>
             </View>
-            <Text style={{color: '#ffffff', textAlign: 'center', fontSize: 12}}>
+            <Text
+              style={{color: colors.text, textAlign: 'center', fontSize: 12}}>
               Children
             </Text>
           </View>
@@ -162,91 +118,72 @@ export default function Profile({navigation}) {
       </View>
 
       <View style={styles.flex5}>
-        <View style={{padding: 20, flexDirection: 'row', alignItems: 'center'}}>
-          <Icon
-            name="md-pencil-sharp"
-            style={{paddingHorizontal: 8}}
-            size={12}
-            color={'#ffffff'}
-          />
-          <Text style={{color: '#ffffff', fontSize: 14}}>Manage Profiles</Text>
-        </View>
-        <View
-          style={{
-            height: 40,
-            width: windowWidth,
-            backgroundColor: '#252525',
-            marginVertical: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('ManagePro');
           }}>
+          <View
+            style={{padding: 20, flexDirection: 'row', alignItems: 'center'}}>
+            <Icon
+              name="md-pencil-sharp"
+              style={{paddingHorizontal: 8}}
+              size={12}
+              color={colors.text}
+            />
+            <Text style={{color: colors.text, fontSize: 14}}>
+              Manage Profiles
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <View style={styles.set}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
               name="checkmark"
               style={{paddingHorizontal: 11}}
               size={22}
-              color={'#ffffff'}
+              color={colors.text}
             />
-            <Text style={{color: '#ffffff'}}>My List</Text>
+            <Text style={{color: colors.text}}>My List</Text>
           </View>
           <Icon
             name="chevron-forward"
             style={{paddingHorizontal: 11}}
             size={22}
-            color={'#ffffff'}
+            color={colors.text}
           />
         </View>
-        <View
-          style={{
-            height: 40,
-            width: windowWidth,
-            backgroundColor: '#252525',
-            marginVertical: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.set}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
               name="settings-outline"
               style={{paddingHorizontal: 11}}
               size={22}
-              color={'#ffffff'}
+              color={colors.text}
             />
-            <Text style={{color: '#ffffff'}}>App Settings</Text>
+            <Text style={{color: colors.text}}>App Settings</Text>
           </View>
           <Icon
             name="chevron-forward"
             style={{paddingHorizontal: 11}}
             size={22}
-            color={'#ffffff'}
+            color={colors.text}
           />
         </View>
-        <View
-          style={{
-            height: 40,
-            width: windowWidth,
-            backgroundColor: '#252525',
-            marginVertical: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.set}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
               name="help-circle-outline"
               style={{paddingHorizontal: 11}}
               size={22}
-              color={'#ffffff'}
+              color={colors.text}
             />
-            <Text style={{color: '#ffffff'}}>Help</Text>
+            <Text style={{color: colors.text}}>Help</Text>
           </View>
           <Icon
             name="chevron-forward"
             style={{paddingHorizontal: 11}}
             size={22}
-            color={'#ffffff'}
+            color={colors.text}
           />
         </View>
 
@@ -276,5 +213,21 @@ const styles = StyleSheet.create({
     flex: 5,
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  profiles: {
+    height: 50,
+    width: 50,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    borderRadius: 6,
+  },
+  set: {
+    height: 40,
+    width: windowWidth,
+    backgroundColor: colors.secondary,
+    marginVertical: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

@@ -4,6 +4,7 @@ import Signup from './screens/Signup.js';
 import Signin from './screens/Signin.js';
 import Home from './screens/Home.js';
 import Login from './screens/Login.js';
+import ManagePro from './screens/ManagePro.js';
 import Profile from './screens/Profile.js';
 import Search from './screens/Search.js';
 import {NavigationContainer} from '@react-navigation/native';
@@ -32,6 +33,7 @@ const ProfileStack = createStackNavigator();
 const ProfileScreen = () => (
   <ProfileStack.Navigator headerMode="none">
     <ProfileStack.Screen name="Profile" component={Profile} />
+    <ProfileStack.Screen name="ManagePro" component={ManagePro} />
   </ProfileStack.Navigator>
 );
 
