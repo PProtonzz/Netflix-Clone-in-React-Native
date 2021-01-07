@@ -5,6 +5,7 @@ import Signin from './screens/Signin.js';
 import Home from './screens/Home.js';
 import Login from './screens/Login.js';
 import ManagePro from './screens/ManagePro.js';
+import EditPro from './screens/EditPro.js';
 import Profile from './screens/Profile.js';
 import Search from './screens/Search.js';
 import {NavigationContainer} from '@react-navigation/native';
@@ -12,8 +13,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 import {AuthContext} from './context';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import colors from './screens/services/colors.js';
 
 const HomeStack = createStackNavigator();
 const HomeScreen = () => (
@@ -34,38 +36,40 @@ const ProfileScreen = () => (
   <ProfileStack.Navigator headerMode="none">
     <ProfileStack.Screen name="Profile" component={Profile} />
     <ProfileStack.Screen name="ManagePro" component={ManagePro} />
+    <ProfileStack.Screen name="EditPro" component={EditPro} />
   </ProfileStack.Navigator>
 );
 
-const AuthDone = createBottomTabNavigator();
+const AuthDone = createMaterialTopTabNavigator();
 
 function AuthDoneScreen() {
   return (
     <AuthDone.Navigator
       initialRouteName="HomeScreen"
+      tabBarPosition="bottom"
       tabBarOptions={{
-        activeTintColor: '#ffffff',
-        activeBackgroundColor: '#101010',
-        inactiveBackgroundColor: '#101010',
-        showLabel: false,
+        activeTintColor: colors.text,
+        labelStyle: {fontSize: 10,textAlign:"center"},
+        iconStyle:{alignItems:"center"},
+        indicatorStyle:{opacity:0},
+        showIcon: true,
         style: {
+          backgroundColor: '#101010',
           elevation: 0, // for Android
           shadowOffset: {
             width: 0,
             height: 0, // for iOS
           },
+          borderEndWidth:0
         },
-      }}
-      color="#101010">
+      }}>
       <AuthDone.Screen
         name="HomeScreen"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({color, size}) => (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Icon name="home-outline" style={{}} size={22} color={color} />
-              <Text style={{color: color, fontSize:7}}>HOME</Text>
-            </View>
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color}) => (
+            <Icon name="home-outline" style={{}} size={18} color={color} />
           ),
         }}
       />
@@ -73,11 +77,9 @@ function AuthDoneScreen() {
         name="SearchScreen"
         component={SearchScreen}
         options={{
-          tabBarIcon: ({color, size}) => (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Icon name="search" style={{}} size={22} color={color} />
-              <Text style={{color: color, fontSize:7}}>Search</Text>
-            </View>
+          tabBarLabel: 'Search',
+          tabBarIcon: ({color}) => (
+            <Icon name="search" style={{}} size={18} color={color} />
           ),
         }}
       />
@@ -85,11 +87,9 @@ function AuthDoneScreen() {
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({color, size}) => (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Icon name="person-outline" style={{}} size={22} color={color} />
-              <Text style={{color: color, fontSize:7}}>Profile</Text>
-            </View>
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color}) => (
+            <Icon name="person-outline" style={{}} size={18} color={color} />
           ),
         }}
       />

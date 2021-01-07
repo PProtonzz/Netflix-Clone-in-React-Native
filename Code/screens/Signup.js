@@ -41,12 +41,26 @@ export default function Signup({navigation}) {
           .ref(`Users/${uid}`)
           .set({
             Info: data,
+            Profiles:{
+              0:{
+                name:"User1"
+              },
+              1:{
+                name:"User2"
+              },
+              2:{
+                name:"User3"
+              },
+              3:{
+                name:"User4"
+              }
+            }
           })
           .then(() => {
             ToastAndroid.show('Registration Successfull!', ToastAndroid.SHORT);
             signUp();
           })
-          .catch((error) => reject(error));
+          .catch((error) => console.log(error));
       })
       .catch((error) => {
         alert(error);

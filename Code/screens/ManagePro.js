@@ -26,10 +26,39 @@ export default function ManagePro({navigation}) {
     id: '',
     phone: '',
   });
+  const [ProfilesList, setProfilesList] = useState([
+      {
+        name:"User1"
+      },
+      {
+        name:"User2"
+      },
+      {
+        name:"User3"
+      },
+     {
+        name:"User4"
+      }
+    
+  ]);
 
+  function getProfiles(uid) {
+    database()
+      .ref(`/Users/${uid}/Profiles`)
+      .on('value', (snapshot) => {
+        var main = [];
+        snapshot.forEach((child) => {
+          //console.log(child.val().name);
+          main.push({
+            name: child.val().name,
+          });
+        });
+        setProfilesList(main);
+      });
+  }
   function getUserData(uid) {
     database()
-      .ref(`/Users/${uid}/Info`)
+      .ref(`/Users/${uid}/Profiles`)
       .on('value', (snapshot) => {
         setUserDetail({
           email: snapshot.val().email,
@@ -37,11 +66,13 @@ export default function ManagePro({navigation}) {
           id: snapshot.val().id,
           phone: snapshot.val().phone,
         });
-      });
+      }); 
   }
+
   useEffect(() => {
     const user = auth().currentUser;
     getUserData(user.uid);
+    getProfiles(user.uid)
   }, []);
 
   return (
@@ -94,19 +125,20 @@ export default function ManagePro({navigation}) {
               size={45}
             />
             <View style={[styles.profiles, {backgroundColor: 'orange'}]}>
+            <TouchableOpacity onPress={()=>{
+                navigation.navigate("EditPro",{index:0,color:'orange',type:require('./assets/girl.png')})
+              }}>
               <Image
                 style={{
                   height: 80,
                   width: 80,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  opacity: 0.8,
                 }}
                 source={require('./assets/girl.png')}></Image>
+                </TouchableOpacity>
             </View>
             <Text
-              style={{color: colors.text, textAlign: 'center', fontSize: 14}}>
-              User1
+              style={{color: colors.text, textAlign: 'center', fontSize: 15}}>
+              {ProfilesList[0].name}
             </Text>
           </View>
           <View>
@@ -117,13 +149,19 @@ export default function ManagePro({navigation}) {
               size={45}
             />
             <View style={[styles.profiles, {backgroundColor: 'pink'}]}>
+              <TouchableOpacity onPress={()=>{
+                navigation.navigate("EditPro",{index:1,color:'pink',type:require('./assets/boy.png')})
+              }}>
+                
               <Image
                 style={{height: 80, width: 80}}
                 source={require('./assets/boy.png')}></Image>
+                
+              </TouchableOpacity>
             </View>
             <Text
-              style={{color: colors.text, textAlign: 'center', fontSize: 14}}>
-              User2
+              style={{color: colors.text, textAlign: 'center', fontSize: 15}}>
+              {ProfilesList[1].name}
             </Text>
           </View>
         </View>
@@ -136,13 +174,17 @@ export default function ManagePro({navigation}) {
               size={45}
             />
             <View style={[styles.profiles, {backgroundColor: 'green'}]}>
+            <TouchableOpacity onPress={()=>{
+                navigation.navigate("EditPro",{index:2,color:'green',type:require('./assets/monkey.png')})
+              }}>
               <Image
                 style={{height: 80, width: 80}}
                 source={require('./assets/monkey.png')}></Image>
+                </TouchableOpacity>
             </View>
             <Text
-              style={{color: colors.text, textAlign: 'center', fontSize: 14}}>
-              User3
+              style={{color: colors.text, textAlign: 'center', fontSize: 15}}>
+              {ProfilesList[2].name}
             </Text>
           </View>
           <View>
@@ -153,13 +195,17 @@ export default function ManagePro({navigation}) {
               size={45}
             />
             <View style={[styles.profiles, {backgroundColor: 'violet'}]}>
+            <TouchableOpacity onPress={()=>{
+                navigation.navigate("EditPro",{index:3,color:'violet',type:require('./assets/baby.png')})
+              }}>
               <Image
                 style={{height: 80, width: 80}}
                 source={require('./assets/baby.png')}></Image>
+                </TouchableOpacity>
             </View>
             <Text
-              style={{color: colors.text, textAlign: 'center', fontSize: 14}}>
-              User4
+              style={{color: colors.text, textAlign: 'center', fontSize: 15}}>
+              {ProfilesList[3].name}
             </Text>
           </View>
         </View>
@@ -177,22 +223,22 @@ const styles = StyleSheet.create({
   pro: {
     flexDirection: 'row',
     width: windowWidth,
-    justifyContent: 'space-between',
-    paddingHorizontal: 40,
+    justifyContent: 'center',
+    marginVertical:30
   },
   profiles: {
     height: 100,
     width: 100,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    margin: 20,
+    marginHorizontal: 15,
     borderRadius: 6,
     opacity: 0.6,
   },
   pencil: {
     position: 'absolute',
-    top: 50,
-    left: 50,
+    top: 30,
+    left: 40,
     elevation: 4,
   },
 });

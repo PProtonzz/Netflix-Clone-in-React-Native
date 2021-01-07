@@ -24,6 +24,22 @@ const windowWidth = Dimensions.get('window').width;
 export default function Profile({navigation}) {
   const {signOut} = React.useContext(AuthContext);
 
+  const [ProfilesList, setProfilesList] = useState([
+    {
+      name:"User1"
+    },
+    {
+      name:"User2"
+    },
+    {
+      name:"User3"
+    },
+   {
+      name:"User4"
+    }
+  
+]);
+
   const [userDetail, setUserDetail] = useState({
     email: '',
     fullName: '',
@@ -43,9 +59,26 @@ export default function Profile({navigation}) {
         });
       });
   }
+
+  function getProfiles(uid) {
+    database()
+      .ref(`/Users/${uid}/Profiles`)
+      .on('value', (snapshot) => {
+        var main = [];
+        snapshot.forEach((child) => {
+          //console.log(child.val().name);
+          main.push({
+            name: child.val().name,
+          });
+        });
+        setProfilesList(main);
+      });
+  }
+
   useEffect(() => {
     const user = auth().currentUser;
     getUserData(user.uid);
+    getProfiles(user.uid)
   }, []);
 
   return (
@@ -77,7 +110,7 @@ export default function Profile({navigation}) {
             </View>
             <Text
               style={{color: colors.text, textAlign: 'center', fontSize: 12}}>
-              User1
+              {ProfilesList[0].name}
             </Text>
           </View>
 
@@ -89,7 +122,7 @@ export default function Profile({navigation}) {
             </View>
             <Text
               style={{color: colors.text, textAlign: 'center', fontSize: 12}}>
-              User2
+              {ProfilesList[1].name}
             </Text>
           </View>
           <View>
@@ -100,7 +133,7 @@ export default function Profile({navigation}) {
             </View>
             <Text
               style={{color: colors.text, textAlign: 'center', fontSize: 12}}>
-              User3
+              {ProfilesList[2].name}
             </Text>
           </View>
           <View>
