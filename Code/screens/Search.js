@@ -10,14 +10,13 @@ import {
   Dimensions,
   Image,
   FlatList,
-  Modal
+  Modal,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {AuthContext} from '../context';
 import colors from './services/colors';
 import LoadingView from './services/Loading.js';
-
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Video} from 'expo-av';
@@ -26,7 +25,7 @@ const windowWidth = Dimensions.get('window').width;
 export default function Search({navigation}) {
   const {signOut} = React.useContext(AuthContext);
   const [List, setList] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [isVisible, setVisible] = useState(null);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [filterList, setFilterList] = useState([]);
@@ -57,17 +56,17 @@ export default function Search({navigation}) {
         var main = [];
         snapshot.forEach((child2) => {
           child2.forEach((child) => {
-              main.push({
-                type: child2.key,
-                key: child.key,
-                name: child.val().name,
-                link: child.val().link,
-                description: child.val().description,
-                genre: child.val().genre,
-                viewCount: child.val().viewCount,
-                cast: child.val().cast,
-                thumbnail: child.val().thumbnail,
-              });
+            main.push({
+              type: child2.key,
+              key: child.key,
+              name: child.val().name,
+              link: child.val().link,
+              description: child.val().description,
+              genre: child.val().genre,
+              viewCount: child.val().viewCount,
+              cast: child.val().cast,
+              thumbnail: child.val().thumbnail,
+            });
           });
         });
         setList(main);
@@ -82,11 +81,11 @@ export default function Search({navigation}) {
     );
   };
 
-  function increaseCount(type,key,viewCount){
+  function increaseCount(type, key, viewCount) {
     database()
       .ref(`Categories/${type}/${key}`)
       .update({
-        viewCount: viewCount+ 1,
+        viewCount: viewCount + 1,
       })
       .then(() => console.log('Data set.'));
   }
@@ -117,14 +116,14 @@ export default function Search({navigation}) {
         />
       </View>
       <View style={{flex: 7}}>
-        <Text style={{fontSize:20,color:colors.text,paddingTop:7}}>
+        <Text style={{fontSize: 20, color: colors.text, paddingTop: 7}}>
           Top Searches
-          </Text>
+        </Text>
         <FlatList
           data={filterList}
           showsHorizontalScrollIndicator={false}
           style={{marginTop: 15, flex: 1}}
-          renderItem={({item,index}) => (
+          renderItem={({item, index}) => (
             <View
               style={{
                 width: windowWidth - 20,
@@ -148,7 +147,7 @@ export default function Search({navigation}) {
                 <TouchableOpacity
                   onPress={() => {
                     setVisible(index);
-                    increaseCount(item.type,item.key,item.viewCount)
+                    increaseCount(item.type, item.key, item.viewCount);
                   }}>
                   <View style={styles.playButton}>
                     <Icon
@@ -193,7 +192,9 @@ export default function Search({navigation}) {
                 ref={(ref) => {
                   console.log(ref);
                 }}
-                source={isVisible !== null ? {uri: filterList[isVisible].link} : null}
+                source={
+                  isVisible !== null ? {uri: filterList[isVisible].link} : null
+                }
                 shouldPlay={false}
                 onLoadStart={() => {
                   setLoading(true);

@@ -60,15 +60,14 @@ export default function Videos({navigation, route}) {
       });
   }
 
-  function increaseCount(type,key,viewCount){
+  function increaseCount(type, key, viewCount) {
     database()
       .ref(`Categories/${type}/${key}`)
       .update({
-        viewCount: viewCount+ 1,
+        viewCount: viewCount + 1,
       })
       .then(() => console.log('Data set.'));
   }
-
 
   useEffect(() => {
     const user = auth().currentUser;
@@ -76,8 +75,8 @@ export default function Videos({navigation, route}) {
     getUserData(user.uid);
   }, []);
 
-  function setLastWatching() {
-    database()
+  async function setLastWatching() {
+    await database()
       .ref(`/Users/${uid}/Profiles/0`)
       .on('value', (snapshot) => {
         if (!snapshot.child(`Recent/${key}`).exists()) {
@@ -85,7 +84,13 @@ export default function Videos({navigation, route}) {
             .ref(`/Users/${uid}/Profiles/0/Recent/${key}`)
             .set({
               link: link,
-              thumbnail:thumbnail,
+              thumbnail: thumbnail,
+              type: type,
+              cast: cast,
+              description: description,
+              genre: genre,
+              name: name,
+              viewCount: viewCount,
             })
             .then(() => console.log('Data set.'));
         }
@@ -117,7 +122,7 @@ export default function Videos({navigation, route}) {
             onPress={() => {
               setVisible(link);
               setLastWatching();
-              increaseCount(type,key,viewCount)
+              increaseCount(type, key, viewCount);
             }}>
             <View style={styles.playButton}>
               <Icon

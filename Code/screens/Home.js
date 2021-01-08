@@ -21,14 +21,29 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Video} from 'expo-av';
 import LoadingView from './services/Loading.js';
 import colors from './services/colors';
-
+import Menu, {MenuItem, MenuDivider} from 'react-native-material-menu';
 import LinearGradient from 'react-native-linear-gradient';
 
 const windowWidth = Dimensions.get('window').width;
 
+var _menu = null;
+
+const setMenuRef = (ref) => {
+  _menu = ref;
+};
+
+const hideMenu = () => {
+  _menu.hide();
+};
+
+const showMenu = () => {
+  _menu.show();
+};
+
 export default function Home({navigation}) {
   const {signOut} = React.useContext(AuthContext);
 
+  const [uid, setuid] = useState(true);
   const [loading, setLoading] = useState(true);
   const [isVisible, setVisible] = useState(null);
   const [BollywoodList, setBollywoodList] = useState([]);
@@ -43,6 +58,10 @@ export default function Home({navigation}) {
     id: '',
     phone: '',
   });
+
+  async function removeRecentVideo(uid, key) {
+    await database().ref(`/Users/${uid}/Profiles/0/Recent/${key}`).remove();
+  }
 
   function getUserData(uid) {
     database()
@@ -67,6 +86,12 @@ export default function Home({navigation}) {
             key: child.key,
             link: child.val().link,
             thumbnail: child.val().thumbnail,
+            type: child.val().type,
+            cast: child.val().cast,
+            description: child.val().description,
+            genre: child.val().genre,
+            name: child.val().name,
+            viewCount: child.val().viewCount,
           });
         });
         setRecentWatching(main);
@@ -195,6 +220,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     const user = auth().currentUser;
+    setuid(user.uid);
     getUserData(user.uid);
     getRecentWatching(user.uid);
     getList();
@@ -219,7 +245,7 @@ export default function Home({navigation}) {
             justifyContent: 'flex-end',
           }}>
           <LinearGradient
-            colors={['transparent', 'rgba(0, 0, 0, 0.73)', 'black']}
+            colors={['transparent', 'rgba(0, 0, 0, 0.80)', 'black']}
             style={{}}>
             <View
               style={{
@@ -259,9 +285,6 @@ export default function Home({navigation}) {
                   size={16}
                   color={'#000000'}
                 />
-                <Text style={{color: '#000000', textAlign: 'center'}}>
-                  Done
-                </Text>
               </View>
               <View style={{alignItems: 'center'}}>
                 <Icon
@@ -324,7 +347,7 @@ export default function Home({navigation}) {
                   <TouchableOpacity
                     onPress={() => {
                       setVisible(index);
-                      increaseCount(item.type,item.key,item.viewCount)
+                      increaseCount(item.type, item.key, item.viewCount);
                     }}>
                     <View style={styles.playButton}>
                       <Icon
@@ -343,12 +366,43 @@ export default function Home({navigation}) {
                     alignItems: 'center',
                     padding: 5,
                   }}>
-                  <Icon
-                    name="information-circle-outline"
-                    color={'grey'}
-                    size={26}
-                  />
-                  <Icon name="ellipsis-vertical" color={'grey'} size={21} />
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('Videos', {
+                        type: item.type,
+                        key: item.key,
+                        description: item.description,
+                        genre: item.genre,
+                        cast: item.cast,
+                        link: item.link,
+                        thumbnail: item.thumbnail,
+                        viewCount: item.viewCount,
+                        name: item.name,
+                      });
+                    }}>
+                    <Icon
+                      name="information-circle-outline"
+                      color={'grey'}
+                      size={26}
+                    />
+                  </TouchableOpacity>
+                  <Menu
+                    ref={setMenuRef}
+                    button={
+                      <Icon
+                        name="ellipsis-vertical"
+                        color={'grey'}
+                        size={21}
+                        onPress={showMenu}></Icon>
+                    }>
+                    <MenuItem
+                      onPress={() => {
+                        hideMenu();
+                        removeRecentVideo(uid, item.key);
+                      }}>
+                      Remove
+                    </MenuItem>
+                  </Menu>
                 </View>
               </View>
             )}
