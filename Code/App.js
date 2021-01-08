@@ -8,6 +8,7 @@ import ManagePro from './screens/ManagePro.js';
 import EditPro from './screens/EditPro.js';
 import Profile from './screens/Profile.js';
 import Search from './screens/Search.js';
+import Videos from './screens/Videos.js';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
@@ -21,6 +22,7 @@ const HomeStack = createStackNavigator();
 const HomeScreen = () => (
   <HomeStack.Navigator headerMode="none">
     <HomeStack.Screen name="Home" component={Home} />
+    <HomeStack.Screen name="Videos" component={Videos} />
   </HomeStack.Navigator>
 );
 

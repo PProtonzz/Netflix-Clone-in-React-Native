@@ -32,6 +32,7 @@ export default function Home({navigation}) {
   const [loading, setLoading] = useState(true);
   const [isVisible, setVisible] = useState(null);
   const [BollywoodList, setBollywoodList] = useState([]);
+  const [RecentWatching, setRecentWatching] = useState([]);
   const [HollywoodList, setHollywoodList] = useState([]);
   const [SeriesList, setSeriesList] = useState([]);
   const [KidsList, setKidsList] = useState([]);
@@ -56,6 +57,22 @@ export default function Home({navigation}) {
       });
   }
 
+  function getRecentWatching(uid) {
+    database()
+      .ref(`/Users/${uid}/Profiles/0/Recent`)
+      .on('value', (snapshot) => {
+        var main = [];
+        snapshot.forEach((child) => {
+          main.push({
+            key: child.key,
+            link: child.val().link,
+            thumbnail: child.val().thumbnail,
+          });
+        });
+        setRecentWatching(main);
+      });
+  }
+
   function getTrendingList() {
     database()
       .ref('/Categories/')
@@ -65,6 +82,8 @@ export default function Home({navigation}) {
           child2.forEach((child) => {
             if (main.every((item) => item.link !== child.val().link)) {
               main.push({
+                type: child2.key,
+                key: child.key,
                 name: child.val().name,
                 link: child.val().link,
                 description: child.val().description,
@@ -101,6 +120,7 @@ export default function Home({navigation}) {
             viewCount: child.val().viewCount,
             cast: child.val().cast,
             thumbnail: child.val().thumbnail,
+            key: child.key,
           });
         });
         setBollywoodList(main);
@@ -119,6 +139,7 @@ export default function Home({navigation}) {
             viewCount: child.val().viewCount,
             cast: child.val().cast,
             thumbnail: child.val().thumbnail,
+            key: child.key,
           });
         });
         setHollywoodList(main);
@@ -137,6 +158,7 @@ export default function Home({navigation}) {
             viewCount: child.val().viewCount,
             cast: child.val().cast,
             thumbnail: child.val().thumbnail,
+            key: child.key,
           });
         });
         setSeriesList(main);
@@ -155,15 +177,26 @@ export default function Home({navigation}) {
             viewCount: child.val().viewCount,
             cast: child.val().cast,
             thumbnail: child.val().thumbnail,
+            key: child.key,
           });
         });
         setKidsList(main);
       });
   }
 
+  function increaseCount(type, key, viewCount) {
+    database()
+      .ref(`Categories/${type}/${key}`)
+      .update({
+        viewCount: viewCount + 1,
+      })
+      .then(() => console.log('Data set.'));
+  }
+
   useEffect(() => {
     const user = auth().currentUser;
     getUserData(user.uid);
+    getRecentWatching(user.uid);
     getList();
     getTrendingList();
   }, []);
@@ -185,16 +218,18 @@ export default function Home({navigation}) {
             width: windowWidth,
             justifyContent: 'flex-end',
           }}>
-          <LinearGradient colors={['transparent', 'rgba(0, 0, 0, 0.73)', 'black']} style={{}}>
-          <View
+          <LinearGradient
+            colors={['transparent', 'rgba(0, 0, 0, 0.73)', 'black']}
+            style={{}}>
+            <View
               style={{
-                height:50,
-                marginBottom:20,
+                height: 50,
+                marginBottom: 20,
               }}></View>
             <View
               style={{
-                marginLeft:40,
-                marginRight:40,
+                marginLeft: 40,
+                marginRight: 40,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: 12,
@@ -240,8 +275,8 @@ export default function Home({navigation}) {
             </View>
             <View
               style={{
-                height:5,
-                marginBottom:20,
+                height: 5,
+                marginBottom: 20,
               }}></View>
           </LinearGradient>
         </ImageBackground>
@@ -253,7 +288,7 @@ export default function Home({navigation}) {
             justifyContent: 'center',
           }}></View>
         <View style={{}}>
-          {/* <View>
+          <View>
             <Text
               style={{
                 color: 'white',
@@ -266,7 +301,7 @@ export default function Home({navigation}) {
           </View>
           <FlatList
             horizontal={true}
-            data={BollywoodList}
+            data={RecentWatching}
             showsHorizontalScrollIndicator={false}
             style={{marginTop: 15, flex: 1}}
             renderItem={({item, index}) => (
@@ -283,8 +318,14 @@ export default function Home({navigation}) {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  source={require('./assets/img.jpg')}>
-                  <TouchableOpacity onPress={() => setVisible(index)}>
+                  source={{
+                    uri: item.thumbnail,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setVisible(index);
+                      increaseCount(item.type,item.key,item.viewCount)
+                    }}>
                     <View style={styles.playButton}>
                       <Icon
                         name="play"
@@ -343,7 +384,7 @@ export default function Home({navigation}) {
                   }}
                   source={
                     isVisible !== null
-                      ? {uri: BollywoodList[isVisible].link}
+                      ? {uri: RecentWatching[isVisible].link}
                       : null
                   }
                   shouldPlay={false}
@@ -367,7 +408,7 @@ export default function Home({navigation}) {
                 />
               </View>
             </View>
-          </Modal> */}
+          </Modal>
 
           <View>
             <Text
@@ -376,6 +417,7 @@ export default function Home({navigation}) {
                 fontWeight: 'bold',
                 fontSize: 17,
                 paddingHorizontal: 15,
+                marginTop: 15,
               }}>
               Trending Now
             </Text>
@@ -388,12 +430,27 @@ export default function Home({navigation}) {
             style={{marginTop: 15, flex: 1}}
             renderItem={({item}) => (
               <View style={{marginHorizontal: 10}}>
-                <Image
-                  style={{borderRadius: 5, height: 150, width: 120}}
-                  source={{
-                    uri: item.thumbnail,
-                  }}
-                />
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Videos', {
+                      type: item.type,
+                      key: item.key,
+                      description: item.description,
+                      genre: item.genre,
+                      cast: item.cast,
+                      link: item.link,
+                      thumbnail: item.thumbnail,
+                      viewCount: item.viewCount,
+                      name: item.name,
+                    });
+                  }}>
+                  <Image
+                    style={{borderRadius: 5, height: 150, width: 120}}
+                    source={{
+                      uri: item.thumbnail,
+                    }}
+                  />
+                </TouchableOpacity>
               </View>
             )}
             ItemSeparatorComponent={() => {
@@ -428,12 +485,27 @@ export default function Home({navigation}) {
             style={{marginTop: 15, flex: 1}}
             renderItem={({item}) => (
               <View style={{marginHorizontal: 10}}>
-                <Image
-                  style={{borderRadius: 5, height: 150, width: 120}}
-                  source={{
-                    uri: item.thumbnail,
-                  }}
-                />
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Videos', {
+                      type: 'Series',
+                      key: item.key,
+                      description: item.description,
+                      genre: item.genre,
+                      cast: item.cast,
+                      link: item.link,
+                      thumbnail: item.thumbnail,
+                      viewCount: item.viewCount,
+                      name: item.name,
+                    });
+                  }}>
+                  <Image
+                    style={{borderRadius: 5, height: 150, width: 120}}
+                    source={{
+                      uri: item.thumbnail,
+                    }}
+                  />
+                </TouchableOpacity>
               </View>
             )}
             ItemSeparatorComponent={() => {
@@ -468,12 +540,27 @@ export default function Home({navigation}) {
             style={{marginTop: 15, flex: 1}}
             renderItem={({item}) => (
               <View style={{marginHorizontal: 10}}>
-                <Image
-                  style={{borderRadius: 5, height: 150, width: 120}}
-                  source={{
-                    uri: item.thumbnail,
-                  }}
-                />
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Videos', {
+                      type: 'Bollywood',
+                      key: item.key,
+                      description: item.description,
+                      genre: item.genre,
+                      cast: item.cast,
+                      link: item.link,
+                      thumbnail: item.thumbnail,
+                      viewCount: item.viewCount,
+                      name: item.name,
+                    });
+                  }}>
+                  <Image
+                    style={{borderRadius: 5, height: 150, width: 120}}
+                    source={{
+                      uri: item.thumbnail,
+                    }}
+                  />
+                </TouchableOpacity>
               </View>
             )}
             ItemSeparatorComponent={() => {
@@ -508,12 +595,27 @@ export default function Home({navigation}) {
             style={{marginTop: 15, flex: 1}}
             renderItem={({item}) => (
               <View style={{marginHorizontal: 10}}>
-                <Image
-                  style={{borderRadius: 5, height: 150, width: 120}}
-                  source={{
-                    uri: item.thumbnail,
-                  }}
-                />
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Videos', {
+                      type: 'Hollywood',
+                      key: item.key,
+                      description: item.description,
+                      genre: item.genre,
+                      cast: item.cast,
+                      link: item.link,
+                      thumbnail: item.thumbnail,
+                      viewCount: item.viewCount,
+                      name: item.name,
+                    });
+                  }}>
+                  <Image
+                    style={{borderRadius: 5, height: 150, width: 120}}
+                    source={{
+                      uri: item.thumbnail,
+                    }}
+                  />
+                </TouchableOpacity>
               </View>
             )}
             ItemSeparatorComponent={() => {
@@ -548,12 +650,27 @@ export default function Home({navigation}) {
             style={{marginTop: 15, flex: 1}}
             renderItem={({item}) => (
               <View style={{marginHorizontal: 10}}>
-                <Image
-                  style={{borderRadius: 5, height: 150, width: 120}}
-                  source={{
-                    uri: item.thumbnail,
-                  }}
-                />
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Videos', {
+                      type: 'Kids',
+                      key: item.key,
+                      description: item.description,
+                      genre: item.genre,
+                      cast: item.cast,
+                      link: item.link,
+                      thumbnail: item.thumbnail,
+                      viewCount: item.viewCount,
+                      name: item.name,
+                    });
+                  }}>
+                  <Image
+                    style={{borderRadius: 5, height: 150, width: 120}}
+                    source={{
+                      uri: item.thumbnail,
+                    }}
+                  />
+                </TouchableOpacity>
               </View>
             )}
             ItemSeparatorComponent={() => {
