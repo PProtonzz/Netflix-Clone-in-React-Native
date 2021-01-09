@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text} from 'react-native';
 import Signup from './screens/Signup.js';
 import Signin from './screens/Signin.js';
 import Home from './screens/Home.js';
@@ -15,8 +14,10 @@ import auth from '@react-native-firebase/auth';
 import {AuthContext} from './context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import colors from './screens/services/colors.js';
+import PushNotification from 'react-native-push-notification';
+import { Alert } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 const HomeStack = createStackNavigator();
 const HomeScreen = () => (
@@ -136,7 +137,52 @@ export default function App() {
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+
+    // Must be outside of any component LifeCycle (such as `componentDidMount`).
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function (token) {
+        console.log('TOKEN:', token);
+      },
+
+      // (required) Called when a remote is received or opened, or local notification is opened
+      onNotification: function (notification) {
+        console.log('NOTIFICATION:', notification);
+
+        // process the notification
+      },
+
+      // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+      onAction: function (notification) {
+        console.log('ACTION:', notification.action);
+        console.log('NOTIFICATION:', notification);
+
+        // process the action
+      },
+
+      // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+      onRegistrationError: function (err) {
+        console.error(err.message, err);
+      },
+
+      // Should the initial notification be popped automatically
+      // default: true
+      popInitialNotification: true,
+
+      /**
+       * (optional) default: true
+       * - Specified if permissions (ios) and token (android and ios) will requested or not,
+       * - if not, you must call PushNotificationsHandler.requestPermissions() later
+       * - if you are not using remote notification or do not have Firebase installed, use this:
+       *     requestPermissions: Platform.OS === 'ios'
+       */
+      requestPermissions: true,
+    });
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
   }, []);
 
   if (initializing) return null;
