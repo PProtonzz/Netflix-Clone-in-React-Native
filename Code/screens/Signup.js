@@ -9,10 +9,12 @@ import {
   StyleSheet,
   SafeAreaView,
   Toast,
+  ActivityIndicator,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {AuthContext} from '../context';
+import colors from './services/colors';
 
 export default function Signup({navigation}) {
   const [fullName, setFullName] = useState('');
@@ -21,12 +23,14 @@ export default function Signup({navigation}) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const {signUp} = React.useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   const registerUser = () => {
     if (password !== confirmPassword) {
       alert("Passwords don't match.");
       return;
     }
+    setLoading(true)
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then((response) => {
@@ -41,20 +45,20 @@ export default function Signup({navigation}) {
           .ref(`Users/${uid}`)
           .set({
             Info: data,
-            Profiles:{
-              0:{
-                name:"User1"
+            Profiles: {
+              0: {
+                name: 'User1',
               },
-              1:{
-                name:"User2"
+              1: {
+                name: 'User2',
               },
-              2:{
-                name:"User3"
+              2: {
+                name: 'User3',
               },
-              3:{
-                name:"User4"
-              }
-            }
+              3: {
+                name: 'User4',
+              },
+            },
           })
           .then(() => {
             ToastAndroid.show('Registration Successfull!', ToastAndroid.SHORT);
@@ -74,6 +78,7 @@ export default function Signup({navigation}) {
         backgroundColor: '#252525',
       }}>
       <StatusBar translucent backgroundColor="transparent" />
+      {loading == false ? (
       <View
         style={{
           flex: 3,
@@ -217,6 +222,25 @@ export default function Signup({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
+      ) : (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <View
+            style={{
+              height: 100,
+              width: 200,
+              backgroundColor: colors.text,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 10,
+            }}>
+            <ActivityIndicator
+              animating={loading}
+              size="large"
+              color="#E50914"
+            />
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -243,4 +267,13 @@ styles = StyleSheet.create({
     color: 'white',
     paddingHorizontal: 10,
   },
+  indicator: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 90,
+    bottom: 0,
+    opacity: 0.8,
+    alignItems: "center",
+},
 });
