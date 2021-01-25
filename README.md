@@ -42,6 +42,10 @@ Firebase Docs: https://firebase.google.com/docs/auth
 
 [![Youtube Tutorial of Netflix Clone](https://raw.githubusercontent.com/PProtonzz/Netflix-Clone-in-React-Native/master/Banner.jpg)](https://www.youtube.com/playlist?list=PLJsBDvrZdNTjoQ2_Y-Nr96vDp-8H5LiZh)
 
+# More Libraries/Clones/Codes
+
+Personal Portfolio in AngularJS: https://github.com/PProtonzz/Personal-Portfolio-in-AngularJS/
+
 # Follow for more
 
 Website/Blogs ► https://pranavfulkari.com/
